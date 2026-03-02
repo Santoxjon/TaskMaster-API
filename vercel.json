@@ -1,5 +1,15 @@
 {
-  "buildCommand": "bun run build",
-  "outputDirectory": "dist",
-  "devCommand": "bun run start"
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/app.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/app.js"
+    }
+  ]
 }
