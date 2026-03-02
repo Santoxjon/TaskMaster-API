@@ -27,6 +27,20 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Project'
+              example:
+                - id: "314d8d5b-8480-45cb-b057-093681407aac"
+                  name: "Web App Redesign"
+                  description: "Rediseño completo de la aplicación web con nueva interfaz moderna"
+                - id: "a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6"
+                  name: "Mobile App Development"
+                  description: "Desarrollo de aplicación móvil nativa para iOS y Android"
+              example:
+                - id: "314d8d5b-8480-45cb-b057-093681407aac"
+                  name: "Web App Redesign"
+                  description: "Rediseño completo de la aplicación web con nueva interfaz moderna"
+                - id: "a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6"
+                  name: "Mobile App Development"
+                  description: "Desarrollo de aplicación móvil nativa para iOS y Android"
         '204':
           description: No hay proyectos
         '500':
@@ -44,6 +58,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProjectInput'
+            example:
+              name: "Dashboard Analytics"
+              description: "Crear un dashboard interactivo para análisis de datos en tiempo real"
       responses:
         '201':
           description: Proyecto creado
@@ -51,6 +68,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+              example:
+                id: "b3c4d5e6-f7g8-49h0-i1j2-k3l4m5n6o7p8"
+                name: "Dashboard Analytics"
+                description: "Crear un dashboard interactivo para análisis de datos en tiempo real"
+              example:
+                id: "b3c4d5e6-f7g8-49h0-i1j2-k3l4m5n6o7p8"
+                name: "Dashboard Analytics"
+                description: "Crear un dashboard interactivo para análisis de datos en tiempo real"
         '400':
           description: Campos obligatorios faltantes (name, description)
           content:
@@ -87,6 +112,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+              example:
+                id: "314d8d5b-8480-45cb-b057-093681407aac"
+                name: "Web App Redesign"
+                description: "Rediseño completo de la aplicación web con nueva interfaz moderna"
         '400':
           description: Parámetro projectId inválido o vacío
           content:
@@ -120,6 +149,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ProjectInput'
+            example:
+              name: "Web App Redesign v2"
+              description: "Rediseño de la aplicación web con nuevas características y mejorado rendimiento"
       responses:
         '200':
           description: Proyecto actualizado
@@ -127,6 +159,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+              example:
+                id: "314d8d5b-8480-45cb-b057-093681407aac"
+                name: "Web App Redesign v2"
+                description: "Rediseño de la aplicación web con nuevas características y mejorado rendimiento"
         '400':
           description: Campos obligatorios faltantes o parámetro projectId inválido
           content:
@@ -378,58 +414,94 @@ components:
         error:
           type: string
           description: Mensaje de error descriptivo
+          example: "Faltan campos obligatorios: name, description"
         code:
           type: string
           description: Código de error interno
+          example: "MISSING_FIELDS"
         timestamp:
           type: string
           format: date-time
           description: Timestamp del error
+          example: "2026-03-02T12:30:45.123Z"
     Project:
       type: object
       properties:
         id:
           type: string
+          format: uuid
+          description: ID único del proyecto
+          example: "314d8d5b-8480-45cb-b057-093681407aac"
         name:
           type: string
+          description: Nombre del proyecto
+          example: "Web App Redesign"
         description:
           type: string
+          description: Descripción del proyecto
+          example: "Rediseño completo de la aplicación web con nueva interfaz moderna"
     ProjectInput:
       type: object
       required: [name, description]
       properties:
         name:
           type: string
+          description: Nombre del proyecto
+          example: "Mobile App Development"
         description:
           type: string
+          description: Descripción del proyecto
+          example: "Desarrollo de aplicación móvil nativa para iOS y Android"
     Task:
       type: object
       properties:
         id:
           type: string
+          format: uuid
+          description: ID único de la tarea
+          example: "a1b2c3d4-e5f6-47g8-h9i0-j1k2l3m4n5o6"
         projectId:
           type: string
+          format: uuid
+          description: ID del proyecto al que pertenece la tarea
+          example: "314d8d5b-8480-45cb-b057-093681407aac"
         title:
           type: string
+          description: Título de la tarea
+          example: "Diseñar mockups de interfaz"
         description:
           type: string
+          description: Descripción detallada de la tarea
+          example: "Crear mockups de alta fidelidad para las pantallas principales de la aplicación"
         status:
           type: string
           enum: [PENDING, IN_PROGRESS, COMPLETED]
+          description: Estado actual de la tarea
+          example: "IN_PROGRESS"
         dueDate:
           type: string
           format: date
+          description: Fecha de vencimiento en formato YYYY-MM-DD
+          example: "2026-03-15"
     TaskInput:
       type: object
       required: [title, description, status, dueDate]
       properties:
         title:
           type: string
+          description: Título de la tarea
+          example: "Implementar autenticación"
         description:
           type: string
+          description: Descripción detallada de la tarea
+          example: "Implementar sistema de autenticación con OAuth2 y JWT"
         status:
           type: string
           enum: [PENDING, IN_PROGRESS, COMPLETED]
+          description: Estado inicial de la tarea
+          example: "PENDING"
         dueDate:
           type: string
           format: date
+          description: Fecha de vencimiento en formato YYYY-MM-DD
+          example: "2026-03-20"
