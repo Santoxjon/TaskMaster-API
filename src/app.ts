@@ -20,11 +20,7 @@ app.get('/', (req: Request, res: Response) => {
 
 const PORT = process.env.PORT || 3000;
 
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`TaskMaster API running on port http://localhost:${PORT}`);
-    console.log(`API documentation available at http://localhost:${PORT}/api/v1/docs`);
-  });
-}
-
-export default app;
+app.listen(PORT, () => {
+  console.log(`TaskMaster API running on port http://localhost:${PORT}`);
+  console.log(`API documentation available at http://localhost:${PORT}/api/v1/docs`);
+});
