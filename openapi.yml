@@ -14,7 +14,7 @@ tags:
     description: Gestión de tareas
 
 paths:
-  /projects:
+  /api/v1/projects:
     get:
       tags: [Projects]
       summary: Listar todos los proyectos
@@ -27,6 +27,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Project'
+        '204':
+          description: No hay proyectos
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       tags: [Projects]
       summary: Crear un nuevo proyecto
@@ -43,8 +51,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+        '400':
+          description: Campos obligatorios faltantes (name, description)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Datos inválidos o mal formados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /projects/{projectId}:
+  /api/v1/projects/{projectId}:
     get:
       tags: [Projects]
       summary: Obtener un proyecto por ID
@@ -61,8 +87,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+        '400':
+          description: Parámetro projectId inválido o vacío
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     put:
       tags: [Projects]
       summary: Actualizar un proyecto
@@ -85,6 +127,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Project'
+        '400':
+          description: Campos obligatorios faltantes o parámetro projectId inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Datos inválidos o mal formados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       tags: [Projects]
       summary: Eliminar un proyecto
@@ -97,8 +163,26 @@ paths:
       responses:
         '204':
           description: Proyecto eliminado
+        '400':
+          description: Parámetro projectId inválido o vacío
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /projects/{projectId}/tasks:
+  /api/v1/projects/{projectId}/tasks:
     get:
       tags: [Tasks]
       summary: Listar tareas de un proyecto (con filtro opcional por estado)
@@ -123,6 +207,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Task'
+        '204':
+          description: No hay tareas
+        '400':
+          description: Parámetro projectId inválido o parámetro status no válido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     post:
       tags: [Tasks]
       summary: Crear tarea asociada a un proyecto
@@ -145,8 +249,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+        '400':
+          description: Campos obligatorios faltantes o parámetro projectId inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Datos inválidos o mal formados (fecha inválida, estado inválido)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /tasks/{taskId}/status:
+  /api/v1/tasks/{taskId}/status:
     patch:
       tags: [Tasks]
       summary: Actualizar el estado de una tarea
@@ -162,6 +290,7 @@ paths:
           application/json:
             schema:
               type: object
+              required: [status]
               properties:
                 status:
                   type: string
@@ -173,8 +302,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+        '400':
+          description: Campo status faltante o parámetro taskId inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Tarea no encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Estado no válido (debe ser PENDING, IN_PROGRESS o COMPLETED)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
-  /projects/{projectId}/tasks/stats:
+  /api/v1/projects/{projectId}/tasks/stats:
     get:
       tags: [Tasks]
       summary: Estadísticas de tareas por estado en un proyecto
@@ -198,9 +351,40 @@ paths:
                     type: integer
                   COMPLETED:
                     type: integer
+        '400':
+          description: Parámetro projectId inválido o vacío
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Proyecto no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Mensaje de error descriptivo
+        code:
+          type: string
+          description: Código de error interno
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp del error
     Project:
       type: object
       properties:

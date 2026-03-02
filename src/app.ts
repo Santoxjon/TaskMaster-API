@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import projectRoutes from './routes/projectRoutes';
-import taskRoutes from './routes/taskRoutes';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 
@@ -9,7 +8,6 @@ app.use(express.json());
 
 // Prefix all routes with /api/v1
 app.use('/api/v1/projects', projectRoutes);
-app.use('/api/v1/tasks', taskRoutes);
 
 // Swagger docs endpoint under /api/v1/docs
 const swaggerDocument = YAML.load('./openapi.yml');
@@ -22,5 +20,6 @@ app.get('/', (req: Request, res: Response) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`TaskMaster API running on port ${PORT}`);
+  console.log(`TaskMaster API running on port http://localhost:${PORT}`);
+  console.log(`API documentation available at http://localhost:${PORT}/api/v1/docs`);
 });
