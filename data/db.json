@@ -1,4 +1,27 @@
 {
-  "projects": [],
-  "tasks": []
+  "projects": [
+    {
+      "id": "411ea203-6ee7-494b-be33-097e08ec6651",
+      "name": "Dashboard Analytics",
+      "description": "Crear un dashboard interactivo para análisis de datos en tiempo real"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "69673ffc-6ed9-454d-91b6-796a1ffac3c9",
+      "projectId": "411ea203-6ee7-494b-be33-097e08ec6651",
+      "title": "Implementar autenticación",
+      "description": "Implementar sistema de autenticación con OAuth2 y JWT",
+      "status": "IN_PROGRESS",
+      "dueDate": "2026-03-20"
+    },
+    {
+      "id": "ea21f1a1-400a-4ab4-a089-468eaa4f5b5f",
+      "projectId": "411ea203-6ee7-494b-be33-097e08ec6651",
+      "title": "Diseñar mockups",
+      "description": "Crear mockups de las nuevas pantallas en Figma",
+      "status": "PENDING",
+      "dueDate": "2026-03-25"
+    }
+  ]
 }

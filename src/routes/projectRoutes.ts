@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { listProjects, createProject, getProject, updateProjectById, deleteProjectById } from '../controllers/projectController';
+import taskRoutes from './taskRoutes';
 
 const router = Router();
 
@@ -17,5 +18,8 @@ router.put('/:projectId', updateProjectById);
 
 // DELETE /api/v1/projects/:projectId - eliminar un proyecto
 router.delete('/:projectId', deleteProjectById);
+
+// Tareas: GET/POST /api/v1/projects/:projectId/tasks
+router.use('/:projectId/tasks', taskRoutes);
 
 export default router;

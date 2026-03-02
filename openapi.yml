@@ -266,6 +266,7 @@ paths:
     post:
       tags: [Tasks]
       summary: Crear tarea asociada a un proyecto
+      description: "Crea una nueva tarea. El estado se establece automáticamente a PENDING si no se proporciona."
       parameters:
         - name: projectId
           in: path
@@ -278,6 +279,10 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TaskInput'
+            example:
+              title: "Diseñar mockups"
+              description: "Crear mockups de las nuevas pantallas en Figma"
+              dueDate: "2026-03-25"
       responses:
         '201':
           description: Tarea creada
@@ -285,6 +290,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+              example:
+                id: "c5d6e7f8-g9h0-41i2-j3k4-l5m6n7o8p9q0"
+                projectId: "314d8d5b-8480-45cb-b057-093681407aac"
+                title: "Diseñar mockups"
+                description: "Crear mockups de las nuevas pantallas en Figma"
+                status: "PENDING"
+                dueDate: "2026-03-25"
         '400':
           description: Campos obligatorios faltantes o parámetro projectId inválido
           content:
@@ -310,11 +322,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /api/v1/tasks/{taskId}/status:
+  /api/v1/projects/{projectId}/tasks/{taskId}/status:
     patch:
       tags: [Tasks]
       summary: Actualizar el estado de una tarea
       parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
         - name: taskId
           in: path
           required: true
@@ -331,6 +348,8 @@ paths:
                 status:
                   type: string
                   enum: [PENDING, IN_PROGRESS, COMPLETED]
+            example:
+              status: "IN_PROGRESS"
       responses:
         '200':
           description: Estado actualizado
@@ -338,14 +357,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+              example:
+                id: "c5d6e7f8-g9h0-41i2-j3k4-l5m6n7o8p9q0"
+                projectId: "314d8d5b-8480-45cb-b057-093681407aac"
+                title: "Diseñar mockups"
+                description: "Crear mockups de las nuevas pantallas en Figma"
+                status: "IN_PROGRESS"
+                dueDate: "2026-03-25"
         '400':
-          description: Campo status faltante o parámetro taskId inválido
+          description: Campo status faltante o parámetro projectId/taskId inválido
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: Tarea no encontrada
+          description: Tarea no encontrada o no pertenece a este proyecto
           content:
             application/json:
               schema:
@@ -367,6 +393,7 @@ paths:
     get:
       tags: [Tasks]
       summary: Estadísticas de tareas por estado en un proyecto
+      description: Obtiene el conteo de tareas agrupadas por estado (PENDING, IN_PROGRESS, COMPLETED) para un proyecto específico
       parameters:
         - name: projectId
           in: path
@@ -387,14 +414,12 @@ paths:
                     type: integer
                   COMPLETED:
                     type: integer
+              example:
+                PENDING: 3
+                IN_PROGRESS: 2
+                COMPLETED: 5
         '400':
           description: Parámetro projectId inválido o vacío
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
-          description: Proyecto no encontrado
           content:
             application/json:
               schema:
@@ -485,7 +510,7 @@ components:
           example: "2026-03-15"
     TaskInput:
       type: object
-      required: [title, description, status, dueDate]
+      required: [title, description, dueDate]
       properties:
         title:
           type: string
@@ -498,7 +523,7 @@ components:
         status:
           type: string
           enum: [PENDING, IN_PROGRESS, COMPLETED]
-          description: Estado inicial de la tarea
+          description: Estado de la tarea (opcional, por defecto es PENDING)
           example: "PENDING"
         dueDate:
           type: string
