@@ -1,0 +1,251 @@
+openapi: 3.0.3
+info:
+  title: TaskMaster API
+  version: 1.0.0
+  description: API RESTful para gestión de proyectos y tareas
+
+servers:
+  - url: http://localhost:3000
+
+tags:
+  - name: Projects
+    description: Gestión de proyectos
+  - name: Tasks
+    description: Gestión de tareas
+
+paths:
+  /projects:
+    get:
+      tags: [Projects]
+      summary: Listar todos los proyectos
+      responses:
+        '200':
+          description: Lista de proyectos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+    post:
+      tags: [Projects]
+      summary: Crear un nuevo proyecto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        '201':
+          description: Proyecto creado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+
+  /projects/{projectId}:
+    get:
+      tags: [Projects]
+      summary: Obtener un proyecto por ID
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Proyecto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '404':
+          description: Proyecto no encontrado
+    put:
+      tags: [Projects]
+      summary: Actualizar un proyecto
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectInput'
+      responses:
+        '200':
+          description: Proyecto actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+    delete:
+      tags: [Projects]
+      summary: Eliminar un proyecto
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Proyecto eliminado
+
+  /projects/{projectId}/tasks:
+    get:
+      tags: [Tasks]
+      summary: Listar tareas de un proyecto (con filtro opcional por estado)
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [PENDING, IN_PROGRESS, COMPLETED]
+      responses:
+        '200':
+          description: Lista de tareas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      tags: [Tasks]
+      summary: Crear tarea asociada a un proyecto
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskInput'
+      responses:
+        '201':
+          description: Tarea creada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  /tasks/{taskId}/status:
+    patch:
+      tags: [Tasks]
+      summary: Actualizar el estado de una tarea
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [PENDING, IN_PROGRESS, COMPLETED]
+      responses:
+        '200':
+          description: Estado actualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+  /projects/{projectId}/tasks/stats:
+    get:
+      tags: [Tasks]
+      summary: Estadísticas de tareas por estado en un proyecto
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Conteo de tareas por estado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  PENDING:
+                    type: integer
+                  IN_PROGRESS:
+                    type: integer
+                  COMPLETED:
+                    type: integer
+
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+    ProjectInput:
+      type: object
+      required: [name, description]
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        projectId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED]
+        dueDate:
+          type: string
+          format: date
+    TaskInput:
+      type: object
+      required: [title, description, status, dueDate]
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [PENDING, IN_PROGRESS, COMPLETED]
+        dueDate:
+          type: string
+          format: date
