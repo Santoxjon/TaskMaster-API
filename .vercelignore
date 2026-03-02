@@ -1,7 +1,6 @@
 node_modules
 .git
 coverage
-src
 \*.test.ts
 jest.config.js
 nodemon.json
